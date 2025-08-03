@@ -1,0 +1,28 @@
+{
+  "name": "summer-bootcamp-apis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fave7903/summer-bootcamp-apis.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Fave7903/summer-bootcamp-apis/issues"
+  },
+  "homepage": "https://github.com/Fave7903/summer-bootcamp-apis#readme",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "form-data": "^4.0.4",
+    "mongoose": "^8.17.0",
+    "multer": "^2.0.2"
+  }
+}
