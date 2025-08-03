@@ -10,9 +10,7 @@ router.post(
   upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'thirdpartyImage', maxCount: 1 },
-    { name: 'childImage_0', maxCount: 1 },
-    { name: 'childImage_1', maxCount: 1 },
-    { name: 'childImage_2', maxCount: 1 },
+    { name: 'childImages', maxCount: 20 }, 
   ]),
   parentController.createParent
 );

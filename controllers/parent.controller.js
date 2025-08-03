@@ -21,8 +21,11 @@ exports.createParent = async (req, res) => {
 
     const childDocs = [];
 
-    for (const child of children) {
-      const childImageFile = req.files[`childImage_${child.tempId}`]?.[0];
+    const childImageFiles = req.files?.['childImages'] || [];
+
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      const childImageFile = childImageFiles[i]; // match by index
       const imageUrl = childImageFile ? await uploadToImgBB(childImageFile.buffer) : null;
 
       const newChild = await Child.create({
@@ -36,6 +39,7 @@ exports.createParent = async (req, res) => {
 
       childDocs.push(newChild._id);
     }
+
 
     const newParent = await Parent.create({
       name,
