@@ -62,3 +62,12 @@ exports.getAllParents = async (req, res) => {
   const parents = await Parent.find().populate('children');
   res.json({ parents });
 };
+
+
+exports.getParent = async (req, res) => {
+  const parent = await Parent.findById(req.params.id).populate('children');
+  if (!parent) {
+    return res.status(404).json({ message: 'Parent not found' });
+  }
+  res.json({ parent });
+};

@@ -17,4 +17,6 @@ router.post(
 
 router.get('/', parentController.getAllParents);
 
+router.get('/:id', parentController.getParent);
+
 module.exports = router;
