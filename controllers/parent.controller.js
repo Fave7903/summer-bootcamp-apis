@@ -6,17 +6,22 @@ exports.createParent = async (req, res) => {
   try {
     const {
       name,
+      email,
+      address,
       phoneNumber,
       thirdpartyName,
       thirdpartyPhoneNumber,
+      thirdpartyRel,
     } = req.body;
 
     const children = JSON.parse(req.body.children || '[]');
 
     const parentImageBuffer = req.files?.['image']?.[0]?.buffer;
+    const imageOfDadBuffer = req.files?.['imageOfDad']?.[0]?.buffer;
     const thirdpartyImageBuffer = req.files?.['thirdpartyImage']?.[0]?.buffer;
 
     const parentImageUrl = parentImageBuffer ? await uploadToImgBB(parentImageBuffer) : null;
+    const imageOfDadUrl = imageOfDadBuffer ? await uploadToImgBB(imageOfDadBuffer) : null;
     const thirdpartyImageUrl = thirdpartyImageBuffer ? await uploadToImgBB(thirdpartyImageBuffer) : null;
 
     const childDocs = [];
@@ -35,6 +40,8 @@ exports.createParent = async (req, res) => {
         schoolAttended: child.schoolAttended,
         bootcampCourse: child.bootcampCourse,
         age: child.age,
+        gender: child.gender,
+        allergies: child.allergies, 
       });
 
       childDocs.push(newChild._id);
@@ -43,10 +50,14 @@ exports.createParent = async (req, res) => {
 
     const newParent = await Parent.create({
       name,
+      email,
+      address,
       phoneNumber,
       image: parentImageUrl,
+      imageOfDad: imageOfDadUrl,
       thirdpartyName,
       thirdpartyPhoneNumber,
+      thirdpartyRel,
       thirdpartyImage: thirdpartyImageUrl,
       children: childDocs,
     });

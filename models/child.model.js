@@ -7,6 +7,8 @@ const childSchema = new mongoose.Schema({
   schoolAttended: String,
   bootcampCourse: String,
   age: Number,
+  gender: String,
+  allergies: String,
 });
 
 module.exports = mongoose.model('Child', childSchema);

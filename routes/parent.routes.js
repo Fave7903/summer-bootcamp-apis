@@ -9,6 +9,7 @@ router.post(
   '/',
   upload.fields([
     { name: 'image', maxCount: 1 },
+    { name: 'imageOfDad', maxCount: 1 },
     { name: 'thirdpartyImage', maxCount: 1 },
     { name: 'childImages', maxCount: 20 }, 
   ]),
