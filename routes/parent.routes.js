@@ -20,4 +20,16 @@ router.get('/', parentController.getAllParents);
 
 router.get('/:id', parentController.getParent);
 
+router.patch(
+  '/:id',
+  upload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'imageOfDad', maxCount: 1 },
+    { name: 'thirdpartyImage', maxCount: 1 },
+    { name: 'childImages', maxCount: 20 } // dynamic array of child images
+  ]),
+  parentController.updateParent
+);
+
+
 module.exports = router;

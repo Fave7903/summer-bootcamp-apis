@@ -82,3 +82,90 @@ exports.getParent = async (req, res) => {
   }
   res.json({ parent });
 };
+
+
+exports.updateParent = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find existing parent
+    const parent = await Parent.findById(id).populate('children');
+    if (!parent) {
+      return res.status(404).json({ message: 'Parent not found' });
+    }
+
+    // Parse children if provided
+    const children = req.body.children ? JSON.parse(req.body.children) : [];
+
+    // Update parent text fields if provided
+    if (req.body.name) parent.name = req.body.name;
+    if (req.body.email) parent.email = req.body.email;
+    if (req.body.address) parent.address = req.body.address;
+    if (req.body.phoneNumber) parent.phoneNumber = req.body.phoneNumber;
+    if (req.body.thirdpartyName) parent.thirdpartyName = req.body.thirdpartyName;
+    if (req.body.thirdpartyPhoneNumber) parent.thirdpartyPhoneNumber = req.body.thirdpartyPhoneNumber;
+    if (req.body.thirdpartyRel) parent.thirdpartyRel = req.body.thirdpartyRel;
+
+    // Handle image uploads if provided
+    if (req.files?.['image']?.[0]?.buffer) {
+      parent.image = await uploadToImgBB(req.files['image'][0].buffer);
+    }
+    if (req.files?.['imageOfDad']?.[0]?.buffer) {
+      parent.imageOfDad = await uploadToImgBB(req.files['imageOfDad'][0].buffer);
+    }
+    if (req.files?.['thirdpartyImage']?.[0]?.buffer) {
+      parent.thirdpartyImage = await uploadToImgBB(req.files['thirdpartyImage'][0].buffer);
+    }
+
+    // Handle children updates
+    const childImageFiles = req.files?.['childImages'] || [];
+
+    for (let i = 0; i < children.length; i++) {
+      const childData = children[i];
+      const childImageFile = childImageFiles[i];
+      let imageUrl = null;
+
+      if (childImageFile) {
+        imageUrl = await uploadToImgBB(childImageFile.buffer);
+      }
+
+      if (childData._id) {
+        // Update existing child
+        const existingChild = await Child.findById(childData._id);
+        if (existingChild) {
+          if (childData.name) existingChild.name = childData.name;
+          if (childData.class) existingChild.class = childData.class;
+          if (childData.schoolAttended) existingChild.schoolAttended = childData.schoolAttended;
+          if (childData.bootcampCourse) existingChild.bootcampCourse = childData.bootcampCourse;
+          if (childData.age) existingChild.age = childData.age;
+          if (childData.gender) existingChild.gender = childData.gender;
+          if (childData.allergies) existingChild.allergies = childData.allergies;
+          if (imageUrl) existingChild.image = imageUrl;
+
+          await existingChild.save();
+        }
+      } else {
+        // Create new child
+        const newChild = await Child.create({
+          name: childData.name,
+          class: childData.class,
+          image: imageUrl,
+          schoolAttended: childData.schoolAttended,
+          bootcampCourse: childData.bootcampCourse,
+          age: childData.age,
+          gender: childData.gender,
+          allergies: childData.allergies,
+        });
+        parent.children.push(newChild._id);
+      }
+    }
+
+    // Save updated parent
+    await parent.save();
+
+    res.json({ message: 'Parent updated successfully', parent });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
